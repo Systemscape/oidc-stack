@@ -1,0 +1,88 @@
+[package]
+name = "oidc-stack"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "OIDC building blocks: JWKS bearer-token validation for dropshot APIs and an axum-oidc session/CSRF stack for BFF web services"
+repository = "https://github.com/Systemscape/oidc-stack"
+publish = false
+
+[dependencies]
+# Core (always compiled): discovery preflight
+reqwest = { version = "0.13", default-features = false, features = [
+    "json",
+    "rustls",
+] }
+serde = { version = "1", features = ["derive"] }
+thiserror = "2"
+tracing = "0.1"
+url = { version = "2", features = ["serde"] }
+
+# validator
+arc-swap = { version = "1", optional = true }
+jsonwebtoken = { version = "10", features = ["aws_lc_rs"], optional = true }
+jwks = { version = "0.5", default-features = false, features = [
+    "aws_lc_rs",
+], optional = true }
+tokio = { version = "1", features = ["rt", "time"], optional = true }
+
+# dropshot
+async-trait = { version = "0.1", optional = true }
+dropshot = { version = "0.17", optional = true }
+schemars = { version = "=0.8", optional = true } # only this version is supported by dropshot
+secrecy = { version = "0.10", features = ["serde"], optional = true }
+
+# bff
+axum = { version = "0.8", optional = true }
+axum-oidc = { version = "1.0.0-dev-2", optional = true }
+time = { version = "0.3", optional = true }
+tower = { version = "0.5", optional = true }
+tower-http = { version = "0.7", features = ["csrf"], optional = true }
+tower-sessions = { version = "0.15", features = ["signed"], optional = true }
+
+# signed-request
+chrono = { version = "0.4", default-features = false, features = [
+    "clock",
+], optional = true }
+hex = { version = "0.4", optional = true }
+hmac = { version = "0.13", optional = true }
+sha2 = { version = "0.11", optional = true }
+subtle = { version = "2", optional = true }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+
+[features]
+default = []
+# Local JWT validation against a cached, background-refreshed JWKS
+# (resource servers accepting bearer tokens). Framework-free.
+validator = ["dep:arc-swap", "dep:jsonwebtoken", "dep:jwks", "dep:tokio"]
+# Dropshot extractor on top of `validator`.
+dropshot = [
+    "validator",
+    "dep:async-trait",
+    "dep:dropshot",
+    "dep:schemars",
+    "dep:secrecy",
+]
+# axum-oidc + tower-sessions SSO stack (login flow, session cookie, CSRF).
+bff = [
+    "dep:axum",
+    "dep:axum-oidc",
+    "dep:time",
+    "dep:tokio",
+    "dep:tower",
+    "dep:tower-http",
+    "dep:tower-sessions",
+]
+# Reverse-proxy helpers forwarding requests with the session's bearer token.
+proxy = ["bff"]
+# HMAC-SHA256 signed-request primitive for inter-service authentication.
+signed-request = [
+    "dep:chrono",
+    "dep:hex",
+    "dep:hmac",
+    "dep:secrecy",
+    "dep:sha2",
+    "dep:subtle",
+]
