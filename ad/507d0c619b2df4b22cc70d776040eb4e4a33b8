@@ -1,0 +1,31 @@
+README.md
+  s_bc146c2c9ca23a::t_cd0b804727ca20 59-72
+src/bff/mod.rs
+  s_bc146c2c9ca23a::t_854a479f2d8a6b 16-21
+examples/bff_axum.rs
+  s_bc146c2c9ca23a::t_d15c51a24de511 1-63
+Cargo.toml
+  s_bc146c2c9ca23a::t_c7bad4b3d85338 53-54,56-66
+examples/dropshot_api.rs
+  s_bc146c2c9ca23a::t_916556f49df4ad 55-57
+  s_bc146c2c9ca23a::t_57a555b8bfd03b 1-54,58-78
+tests/validator.rs
+  s_bc146c2c9ca23a::t_940a17dd69e630 1-98,103-109,114-120,125
+  s_bc146c2c9ca23a::t_916556f49df4ad 99-102,110-113,121-124
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "ad507d0c619b2df4b22cc70d776040eb4e4a33b8",
+  "prompts": {},
+  "sessions": {
+    "s_bc146c2c9ca23a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1a027c2e-fb7d-402a-8de5-25d14651202f",
+        "model": "claude-fable-5"
+      },
+      "human_author": "JuliDi <julian@systemscape.de>"
+    }
+  }
+}
