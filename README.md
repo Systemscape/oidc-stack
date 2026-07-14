@@ -3,13 +3,13 @@
 OIDC building blocks for Rust services. Two independent halves, selected by
 feature; everything is off by default.
 
-| Feature | Contents |
-|---|---|
-| `validator` | Local JWT validation against a cached, background-refreshed JWKS (resource servers). Framework-free. |
-| `dropshot` | `Authed<C>` extractor on top of `validator` for dropshot servers. |
-| `bff` | axum-oidc + tower-sessions SSO stack: login flow, signed session cookie, CSRF layer, `/auth/*` routes. |
-| `proxy` | Forward requests to a backend API with the session's bearer token (implies `bff`). |
-| `signed-request` | HMAC-SHA256 `{timestamp}.{body}` signing/verification for inter-service calls. |
+| Feature          | Contents                                                                                               |
+| ---------------- | ------------------------------------------------------------------------------------------------------ |
+| `validator`      | Local JWT validation against a cached, background-refreshed JWKS (resource servers). Framework-free.   |
+| `dropshot`       | `Authed<C>` extractor on top of `validator` for dropshot servers.                                      |
+| `bff`            | axum-oidc + tower-sessions SSO stack: login flow, signed session cookie, CSRF layer, `/auth/*` routes. |
+| `proxy`          | Forward requests to a backend API with the session's bearer token (implies `bff`).                     |
+| `signed-request` | HMAC-SHA256 `{timestamp}.{body}` signing/verification for inter-service calls.                         |
 
 ## Resource server (dropshot)
 

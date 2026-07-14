@@ -1,0 +1,10 @@
+# Rust build artifacts
+/target/
+
+# Node
+svelte/node_modules/
+svelte/dist/
+
+# Lockfiles (managed by their own tools)
+svelte/pnpm-lock.yaml
+Cargo.lock

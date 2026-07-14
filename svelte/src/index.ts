@@ -5,15 +5,32 @@
  * everywhere; `customFetch` is shaped for use as an Orval mutator.
  */
 
-import { createAuthFetcher, type AuthFetcher, type AuthFetcherOptions } from './fetcher.js';
-import { createAuthStore, type AuthStore, type AuthStoreOptions } from './auth.js';
+import {
+    createAuthFetcher,
+    type AuthFetcher,
+    type AuthFetcherOptions,
+} from './fetcher.js';
+import {
+    createAuthStore,
+    type AuthStore,
+    type AuthStoreOptions,
+} from './auth.js';
 
 export type { AuthUser } from './types.js';
 export { hasGroup } from './types.js';
-export { createAuthFetcher, type AuthFetcher, type AuthFetcherOptions } from './fetcher.js';
-export { createAuthStore, type AuthStore, type AuthStoreOptions } from './auth.js';
+export {
+    createAuthFetcher,
+    type AuthFetcher,
+    type AuthFetcherOptions,
+} from './fetcher.js';
+export {
+    createAuthStore,
+    type AuthStore,
+    type AuthStoreOptions,
+} from './auth.js';
 
-export interface AuthClientOptions extends AuthFetcherOptions, AuthStoreOptions {}
+export interface AuthClientOptions
+    extends AuthFetcherOptions, AuthStoreOptions {}
 
 export type AuthClient = AuthStore & AuthFetcher;
 
@@ -25,7 +42,8 @@ export function createAuthClient(options: AuthClientOptions = {}): AuthClient {
     const store = createAuthStore(options);
     const fetcher = createAuthFetcher({
         ...options,
-        onSessionExpired: options.onSessionExpired ?? (() => store.clearSessionAndLogin())
+        onSessionExpired:
+            options.onSessionExpired ?? (() => store.clearSessionAndLogin()),
     });
     return { ...store, ...fetcher };
 }
