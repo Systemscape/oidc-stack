@@ -1,0 +1,40 @@
+.prettierignore
+  s_e9e2d218aa09d4::t_d3e30fcbfabb0c 1-10
+.prettierrc.json
+  s_e9e2d218aa09d4::t_1f2ca987a36bfc 1-12
+svelte/src/fetcher.ts
+  s_e9e2d218aa09d4::t_fd9946bdc02261 54-56,70-72,76-77,92-96,120,134-136,144,168,202
+svelte/package.json
+  s_e9e2d218aa09d4::t_493356f6a09179 44
+  s_e9e2d218aa09d4::t_42108b3125d794 32-33
+README.md
+  s_e9e2d218aa09d4::t_fd9946bdc02261 6-12
+svelte/src/index.ts
+  s_e9e2d218aa09d4::t_fd9946bdc02261 8-17,21-30,32-33,45-46
+justfile
+  s_e9e2d218aa09d4::t_2cb81ecec0c782 1-33
+svelte/README.md
+  s_e9e2d218aa09d4::t_fd9946bdc02261 22-24
+svelte/src/auth.ts
+  s_e9e2d218aa09d4::t_fd9946bdc02261 58,94-102
+.github/workflows/ci.yml
+  s_e9e2d218aa09d4::t_a4ca0938f0e0ea 1-66
+svelte/pnpm-lock.yaml
+  s_e9e2d218aa09d4::t_117a863b57f299 11-13,90-94,162-163
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "150b8c8d8422f2609e511c3c2edf4ce03436a1ca",
+  "prompts": {},
+  "sessions": {
+    "s_e9e2d218aa09d4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a9f78ef-f399-4e49-89da-23ff034c055b",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "JuliDi <julian@systemscape.de>"
+    }
+  }
+}
