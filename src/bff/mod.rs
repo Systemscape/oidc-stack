@@ -13,10 +13,15 @@ pub use csrf::build_csrf_layer;
 pub use session::{SECURE_COOKIES, build_session_layer, clear_session_cookie_header};
 pub use stack::{AuthMeResponse, BffAuth, BffError, BffOptions};
 
+// Re-export the types consumers need to build a [`BffConfig`] and read the
+// session's claims/token in handlers, so they don't have to depend on
+// axum-oidc directly.
+pub use axum_oidc::openidconnect::{ClientId, ClientSecret, IssuerUrl};
+pub use axum_oidc::{OidcAccessToken, OidcClaims};
+
 use axum::extract::FromRequestParts;
 use axum::http::request::Parts;
 use axum_oidc::openidconnect::core::CoreGenderClaim;
-use axum_oidc::openidconnect::{ClientId, ClientSecret, IssuerUrl};
 use axum_oidc::{AdditionalClaims, OidcClient, OidcSession, Session};
 use serde::{Deserialize, Serialize};
 use tower_sessions::Session as TowerSession;

@@ -56,6 +56,20 @@ let app = bff
 CSRF is origin-based (`Sec-Fetch-Site` / `Origin`, tower-http `CsrfLayer`):
 mutating cross-origin requests get 403, the frontend sends no token.
 
+## Testing
+
+`cargo test --all-features` runs the unit tests plus `tests/validator.rs`,
+which exercises discovery, JWKS fetch, and token validation end-to-end
+against a wiremock provider (no network, no real IdP).
+
+The examples compile-test the public API (`cargo check --examples
+--all-features`) and run against a real provider for manual testing:
+
+```sh
+OIDC_ISSUER=... OIDC_CLIENT_ID=... cargo run --example dropshot_api --features dropshot
+OIDC_ISSUER=... OIDC_CLIENT_ID=... OIDC_CLIENT_SECRET=... cargo run --example bff_axum --features bff
+```
+
 ## Version pins
 
 `axum-oidc` is pre-release (`1.0.0-dev-2`); its types appear in the `bff`
