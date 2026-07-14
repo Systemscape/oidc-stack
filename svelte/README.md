@@ -39,5 +39,11 @@ export const customFetch = auth.customFetch;
 
 `./fetcher` has no Svelte dependency if you only need the fetch helpers.
 
+`customFetch` returns `{ data, status, headers }` for any completed response,
+success or business error, so callers switch on `status` and render errors
+inline; it throws only once the session has expired. On a 401 it first hits
+`recoverUrl` (default `/auth/me`) once to force a token refresh and retries the
+request, absorbing access-token-expiry races before redirecting to re-auth.
+
 The `AuthUser` shape mirrors the Rust crate's `AuthMeResponse`; a unit test
 on the Rust side snapshots the JSON so the two cannot drift silently.
