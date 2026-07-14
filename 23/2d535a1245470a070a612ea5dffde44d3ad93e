@@ -1,0 +1,39 @@
+svelte/src/types.ts
+  s_bc146c2c9ca23a::t_111dca79cad898 1-17
+README.md
+  s_bc146c2c9ca23a::t_d5d4ca3de880da 59-67
+svelte/src/fetcher.ts
+  s_bc146c2c9ca23a::t_3bcc46250fa463 1-145
+svelte/src/auth.ts
+  s_bc146c2c9ca23a::t_1dd99d25270ccd 1-95
+svelte/.gitignore
+  s_bc146c2c9ca23a::t_3b5aed4bd3d959 1-2
+svelte/tsconfig.json
+  s_bc146c2c9ca23a::t_deec6514d26097 1-14
+svelte/src/index.ts
+  s_bc146c2c9ca23a::t_b44676d96ddaec 1-31
+src/bff/stack.rs
+  s_bc146c2c9ca23a::t_859347ade88cb4 364-390
+svelte/package.json
+  s_bc146c2c9ca23a::t_92400493087076 1-46
+svelte/README.md
+  s_bc146c2c9ca23a::t_760cb680b42fa3 1-43
+svelte/pnpm-lock.yaml
+  s_bc146c2c9ca23a::t_dd502adcfb867a 1-177
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "232d535a1245470a070a612ea5dffde44d3ad93e",
+  "prompts": {},
+  "sessions": {
+    "s_bc146c2c9ca23a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1a027c2e-fb7d-402a-8de5-25d14651202f",
+        "model": "claude-fable-5"
+      },
+      "human_author": "JuliDi <julian@systemscape.de>"
+    }
+  }
+}
