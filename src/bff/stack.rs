@@ -361,3 +361,30 @@ async fn recover_oidc_callback_error(req: Request, next: Next, redirect_to: &str
     );
     Redirect::to(redirect_to).into_response()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Contract guard: the /auth/me JSON shape is mirrored by `AuthUser` in
+    /// svelte/src/types.ts. A change here must update the npm package too.
+    #[test]
+    fn auth_me_response_matches_frontend_contract() {
+        let value = serde_json::to_value(AuthMeResponse {
+            sub: "sub".into(),
+            email: Some("a@b.c".into()),
+            name: None,
+            groups: vec!["users".into()],
+        })
+        .expect("serializes");
+        assert_eq!(
+            value,
+            serde_json::json!({
+                "sub": "sub",
+                "email": "a@b.c",
+                "name": null,
+                "groups": ["users"],
+            })
+        );
+    }
+}

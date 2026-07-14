@@ -1,0 +1,46 @@
+{
+    "name": "@systemscape/oidc-stack-svelte",
+    "version": "0.1.0",
+    "description": "Frontend counterpart of oidc-stack's bff module: auth store and fetch helpers for SvelteKit SPAs",
+    "license": "MIT",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Systemscape/oidc-stack",
+        "directory": "svelte"
+    },
+    "files": [
+        "dist",
+        "src"
+    ],
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./fetcher": {
+            "types": "./dist/fetcher.d.ts",
+            "default": "./dist/fetcher.js"
+        },
+        "./auth": {
+            "types": "./dist/auth.d.ts",
+            "default": "./dist/auth.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc",
+        "prepare": "tsc"
+    },
+    "peerDependencies": {
+        "svelte": "^5.0.0"
+    },
+    "peerDependenciesMeta": {
+        "svelte": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "svelte": "^5.0.0",
+        "typescript": "^5.6.0"
+    }
+}

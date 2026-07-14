@@ -56,6 +56,15 @@ let app = bff
 CSRF is origin-based (`Sec-Fetch-Site` / `Origin`, tower-http `CsrfLayer`):
 mutating cross-origin requests get 403, the frontend sends no token.
 
+## Frontend (SvelteKit)
+
+[`svelte/`](svelte/README.md) ships `@systemscape/oidc-stack-svelte`, the
+client side of the `bff` contract: auth store (`checkAuth`, `user`,
+`accessDenied`), login/logout/clear actions, and 401/403-aware fetch helpers
+usable as an Orval mutator. Install via pnpm's git `path:` selector; a Rust
+unit test snapshots the `/auth/me` JSON shape so the two sides cannot drift
+silently.
+
 ## Testing
 
 `cargo test --all-features` runs the unit tests plus `tests/validator.rs`,
