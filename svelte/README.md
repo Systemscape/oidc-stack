@@ -19,9 +19,9 @@ One client per app, e.g. `src/lib/auth.ts`:
 import { createAuthClient } from '@systemscape/oidc-stack-svelte';
 
 export const auth = createAuthClient({
-    proxyPrefix: '/api/',
-    onProxyRejected: (url) => console.error(`backend rejected token for ${url}`),
-    onForbidden: () => forbiddenError.set(true) // render inline, not a toast
+  proxyPrefix: '/api/',
+  onProxyRejected: (url) => console.error(`backend rejected token for ${url}`),
+  onForbidden: () => forbiddenError.set(true), // render inline, not a toast
 });
 ```
 

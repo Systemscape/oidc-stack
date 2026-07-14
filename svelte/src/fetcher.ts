@@ -51,7 +51,9 @@ export interface AuthFetcher {
      */
     apiFetch: (
         url: string,
-        options?: RequestInit & { on401?: (url: string, res: Response) => void }
+        options?: RequestInit & {
+            on401?: (url: string, res: Response) => void;
+        },
     ) => Promise<Response>;
     /**
      * Fetch function in the shape Orval expects from a `mutator`: returns
@@ -65,11 +67,14 @@ export interface AuthFetcher {
 }
 
 /** Build the fetch helpers, wiring 401/403 handling to the given hooks. */
-export function createAuthFetcher(options: AuthFetcherOptions = {}): AuthFetcher {
+export function createAuthFetcher(
+    options: AuthFetcherOptions = {},
+): AuthFetcher {
     /** Prevent multiple concurrent session-expired redirects. */
     let redirecting = false;
 
-    const recoverUrl = options.recoverUrl === undefined ? '/auth/me' : options.recoverUrl;
+    const recoverUrl =
+        options.recoverUrl === undefined ? '/auth/me' : options.recoverUrl;
 
     const onSessionExpired =
         options.onSessionExpired ??
@@ -84,7 +89,11 @@ export function createAuthFetcher(options: AuthFetcherOptions = {}): AuthFetcher
     }
 
     function handle401(url: string, res: Response): void {
-        if (options.proxyPrefix && url.startsWith(options.proxyPrefix) && options.onProxyRejected) {
+        if (
+            options.proxyPrefix &&
+            url.startsWith(options.proxyPrefix) &&
+            options.onProxyRejected
+        ) {
             options.onProxyRejected(url, res);
         } else {
             handleSessionExpired();
@@ -108,7 +117,7 @@ export function createAuthFetcher(options: AuthFetcherOptions = {}): AuthFetcher
             try {
                 const res = await fetch(recoverUrl, {
                     credentials: 'include',
-                    redirect: 'manual'
+                    redirect: 'manual',
                 });
                 return res.status === 200;
             } catch {
@@ -122,7 +131,9 @@ export function createAuthFetcher(options: AuthFetcherOptions = {}): AuthFetcher
 
     async function apiFetch(
         url: string,
-        fetchOptions?: RequestInit & { on401?: (url: string, res: Response) => void }
+        fetchOptions?: RequestInit & {
+            on401?: (url: string, res: Response) => void;
+        },
     ): Promise<Response> {
         const { on401, ...init } = fetchOptions ?? {};
 
@@ -130,7 +141,7 @@ export function createAuthFetcher(options: AuthFetcherOptions = {}): AuthFetcher
             const res = await fetch(url, {
                 ...init,
                 credentials: 'include',
-                redirect: 'manual'
+                redirect: 'manual',
             });
 
             if (isSessionExpiry(res)) {
@@ -154,7 +165,7 @@ export function createAuthFetcher(options: AuthFetcherOptions = {}): AuthFetcher
             const res = await fetch(url, {
                 ...init,
                 credentials: 'include',
-                redirect: 'manual'
+                redirect: 'manual',
             });
             if (isSessionExpiry(res) && !isRetry && (await recoverSession())) {
                 return run(true);
@@ -188,7 +199,7 @@ export function createAuthFetcher(options: AuthFetcherOptions = {}): AuthFetcher
         return {
             data,
             status: res.status,
-            headers: res.headers
+            headers: res.headers,
         } as T;
     }
 

@@ -55,7 +55,7 @@ export function createAuthStore(options: AuthStoreOptions = {}): AuthStore {
                     sub: data.sub,
                     email: data.email ?? null,
                     name: data.name ?? null,
-                    groups: data.groups ?? []
+                    groups: data.groups ?? [],
                 };
                 user.set(userData);
                 accessDenied.set(false);
@@ -91,5 +91,13 @@ export function createAuthStore(options: AuthStoreOptions = {}): AuthStore {
         window.location.href = clearUrl;
     }
 
-    return { user, authLoading, accessDenied, checkAuth, login, logout, clearSessionAndLogin };
+    return {
+        user,
+        authLoading,
+        accessDenied,
+        checkAuth,
+        login,
+        logout,
+        clearSessionAndLogin,
+    };
 }
