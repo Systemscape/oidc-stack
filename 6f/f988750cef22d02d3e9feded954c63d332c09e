@@ -1,0 +1,21 @@
+svelte/src/fetcher.ts
+  s_bc146c2c9ca23a::t_7a9edfa44f006c 4-6,22-23,32-33,36-43,48-50,57-60,72-73,94-122,129-141,143-144,146,153-164,166-168,174,177-178
+svelte/README.md
+  s_bc146c2c9ca23a::t_c848b5dc998d1c 42-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "6ff988750cef22d02d3e9feded954c63d332c09e",
+  "prompts": {},
+  "sessions": {
+    "s_bc146c2c9ca23a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1a027c2e-fb7d-402a-8de5-25d14651202f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "JuliDi <julian@systemscape.de>"
+    }
+  }
+}
