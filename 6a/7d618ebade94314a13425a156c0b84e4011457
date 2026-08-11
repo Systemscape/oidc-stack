@@ -1,0 +1,26 @@
+src/bff/stack.rs
+  s_7c464e2e6b2140::t_5e7f0ad6ed685c 12
+  s_7c464e2e6b2140::t_9a76ea38bc063b 275-307
+  s_7c464e2e6b2140::t_52fc99a3ecb463 198
+  s_7c464e2e6b2140::t_a63a2d305ccb01 402-431
+  s_7c464e2e6b2140::t_70ca625db66d0a 308-309
+src/bff/session.rs
+  s_7c464e2e6b2140::t_447e11b6207c52 19-23
+  s_7c464e2e6b2140::t_d7d10e9c482e4d 18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "6a7d618ebade94314a13425a156c0b84e4011457",
+  "prompts": {},
+  "sessions": {
+    "s_7c464e2e6b2140": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "68054e7c-dfbd-4ade-925e-645f200cd963",
+        "model": "claude-opus-5"
+      },
+      "human_author": "JuliDi <julian@systemscape.de>"
+    }
+  }
+}
