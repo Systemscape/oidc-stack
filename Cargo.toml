@@ -32,7 +32,9 @@ secrecy = { version = "0.10.3", optional = true, features = [ "serde" ] }
 
 # bff
 axum = { version = "0.8.9", optional = true }
-axum-oidc = { version = "1.0.0-dev-2", optional = true }
+# Fork: absorbs a refused refresh token instead of erroring, and does not clear
+# the session when it does. Back to crates.io once that is released upstream.
+axum-oidc = { git = "https://codeberg.org/julidi/axum-oidc.git", rev = "c356510de72df9f4ecbf6aed53abc3e5ddc024b4", optional = true }
 serde_json = { version = "1.0.151", optional = true }
 time = { version = "0.3.55", optional = true }
 tower = { version = "0.5.3", optional = true }

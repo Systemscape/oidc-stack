@@ -9,7 +9,7 @@ use axum::{
     response::{IntoResponse, Redirect, Response},
     routing::{any, get},
 };
-use axum_oidc::openidconnect::{IssuerUrl, RequestTokenError, Scope};
+use axum_oidc::openidconnect::{IssuerUrl, Scope};
 use axum_oidc::{
     OidcAuthLayer, OidcClaims, OidcClient, OidcLoginLayer, OidcRpInitiatedLogout,
     error::MiddlewareError, handle_oidc_redirect,
@@ -195,7 +195,11 @@ impl<S: SessionStore + Clone> BffAuth<S> {
 
         let oidc_auth_service = ServiceBuilder::new()
             .layer(HandleErrorLayer::new(|e: MiddlewareError| async move {
-                auth_middleware_error_response(e)
+                // A refused refresh token is absorbed by the auth middleware,
+                // which leaves the request unauthenticated; what reaches here
+                // is a real fault.
+                tracing::error!(?e, "error in OIDC auth middleware");
+                e.into_response()
             }))
             .layer(OidcAuthLayer::<GroupsClaims, OidcSessionStore>::new(
                 oidc_client,
@@ -270,41 +274,6 @@ impl<S: SessionStore + Clone> BffAuth<S> {
             // CSRF: reject cross-origin mutating requests (Sec-Fetch-Site / Origin).
             .layer(csrf_layer)
     }
-}
-
-/// Token endpoint errors that mean the *client* is misconfigured, not that
-/// this session's token went bad. A 401 there would loop the user through a
-/// login that cannot succeed, so they stay a 500.
-const CLIENT_CONFIG_ERROR_CODES: [&str; 4] = [
-    "invalid_client",
-    "unauthorized_client",
-    "invalid_scope",
-    "unsupported_grant_type",
-];
-
-/// Response for an error out of the OIDC auth middleware.
-///
-/// A token request the provider *answered* with an error means it rejected
-/// this session's refresh token: expired, revoked, or already spent by a
-/// concurrent request under rotation. That is a 401, not a server fault.
-/// axum-oidc absorbs only `invalid_grant` and `JwtToken` itself, so
-/// provider-specific codes (Rauthy: `NotFound`) would otherwise be a 500.
-/// Transport and parse failures are real server faults and stay 500.
-///
-/// The session is left untouched: a concurrent request may have just stored a
-/// newer valid token, and clearing it would force a needless re-login. The
-/// 401 lets the client re-check and retry (`recoverUrl` in the `svelte`
-/// fetcher); a dead session fails that too and ends at `/auth/clear`.
-fn auth_middleware_error_response(e: MiddlewareError) -> Response {
-    if let MiddlewareError::RequestToken(RequestTokenError::ServerResponse(response)) = &e {
-        let code = response.error().as_ref();
-        if !CLIENT_CONFIG_ERROR_CODES.contains(&code) {
-            tracing::warn!(code, "OIDC provider rejected the refresh token");
-            return (StatusCode::UNAUTHORIZED, "unauthorized").into_response();
-        }
-    }
-    tracing::error!(?e, "error in OIDC auth middleware");
-    e.into_response()
 }
 
 /// 401 without a session, 403 when `group` is set and not held.
@@ -399,36 +368,6 @@ async fn recover_oidc_callback_error(req: Request, next: Next, redirect_to: &str
 #[cfg(test)]
 mod tests {
     use super::*;
-    use axum_oidc::openidconnect::{StandardErrorResponse, core::CoreErrorResponseType};
-
-    fn token_error(code: CoreErrorResponseType) -> MiddlewareError {
-        MiddlewareError::RequestToken(RequestTokenError::ServerResponse(
-            StandardErrorResponse::new(code, None, None),
-        ))
-    }
-
-    #[test]
-    fn rejected_refresh_token_is_a_401() {
-        // Rauthy's answer for a refresh token it no longer holds.
-        let rejected = token_error(CoreErrorResponseType::Extension("NotFound".into()));
-        assert_eq!(
-            auth_middleware_error_response(rejected).status(),
-            StatusCode::UNAUTHORIZED
-        );
-    }
-
-    #[test]
-    fn misconfigured_client_or_a_server_fault_is_a_500() {
-        for e in [
-            token_error(CoreErrorResponseType::InvalidClient),
-            MiddlewareError::IdTokenMissing,
-        ] {
-            assert_eq!(
-                auth_middleware_error_response(e).status(),
-                StatusCode::INTERNAL_SERVER_ERROR
-            );
-        }
-    }
 
     /// Contract guard: the /auth/me JSON shape is mirrored by `AuthUser` in
     /// svelte/src/types.ts. A change here must update the npm package too.

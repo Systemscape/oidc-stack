@@ -187,8 +187,7 @@ dependencies = [
 [[package]]
 name = "axum-oidc"
 version = "1.0.0-dev-2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cd858414854df3177c7210f209ec485614725873b98146cd38b46efd65399319"
+source = "git+https://codeberg.org/julidi/axum-oidc.git?rev=c356510de72df9f4ecbf6aed53abc3e5ddc024b4#c356510de72df9f4ecbf6aed53abc3e5ddc024b4"
 dependencies = [
  "arc-swap",
  "axum",
