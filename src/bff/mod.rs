@@ -103,43 +103,8 @@ impl<AC: AdditionalClaims> Session<AC> for OidcSessionStore {
     }
 
     async fn set(&mut self, value: OidcSession<AC, CoreGenderClaim>) -> Result<(), Self::Error> {
-        // Serialize up front (`insert` does this anyway) so the stored shape
-        // can be checked for a missing refresh token before it is written.
-        let value = serde_json::to_value(value)?;
-        if authenticated_without_refresh_token(&value) {
-            tracing::warn!(
-                "OIDC provider issued no refresh token. This session will start \
-                 returning 401s as soon as its access token expires, and cannot \
-                 recover: the auth middleware only refreshes when it has a \
-                 refresh token, so requests silently arrive without an access \
-                 token. Enable the refresh_token grant for this client (Rauthy: \
-                 client -> Allowed Flows -> refresh_token), or request the \
-                 `offline_access` scope if your provider requires it."
-            );
-        }
-        self.session
-            .insert_value(OIDC_SESSION_KEY, value)
-            .await
-            .map(|_| ())
+        self.session.insert(OIDC_SESSION_KEY, value).await
     }
-}
-
-/// Return whether a stored session is authenticated but carries no refresh token.
-/// This indicates a provider misconfiguration that strands the session at token expiry.
-///
-/// axum-oidc keeps `OidcSession`'s variants and fields private, so its derived
-/// `Serialize` is the only way to see inside: a transparent newtype over an
-/// externally tagged enum, making an authenticated session
-/// `{"Authenticated": {"authenticated": {…}, "refresh_token": <str>|null}}`.
-/// Anything else (`"Unauthenticated"`, `{"Pending": …}`, an unrecognised
-/// shape) is not a misconfiguration and must stay quiet.
-fn authenticated_without_refresh_token(value: &serde_json::Value) -> bool {
-    let Some(session) = value.get("Authenticated") else {
-        return false;
-    };
-    session
-        .get("refresh_token")
-        .is_none_or(serde_json::Value::is_null)
 }
 
 /// Spawn a background task that periodically re-runs OIDC discovery so the
@@ -180,54 +145,4 @@ where
             }
         }
     });
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use serde_json::json;
-
-    /// Canary: `authenticated_without_refresh_token` reads a JSON shape
-    /// axum-oidc never promised. `Default` is the only `OidcSession` an
-    /// outsider can construct, but it still pins the two assumptions that
-    /// would break silently on an upgrade: the newtype is transparent, and the
-    /// inner enum is externally tagged.
-    #[test]
-    fn oidc_session_serializes_as_externally_tagged_enum() {
-        let value = serde_json::to_value(OidcSession::<GroupsClaims, CoreGenderClaim>::default())
-            .expect("serializes");
-        assert_eq!(value, json!("Unauthenticated"));
-    }
-
-    #[test]
-    fn warns_only_for_an_authenticated_session_without_a_refresh_token() {
-        let authenticated = |refresh_token| {
-            json!({ "Authenticated": {
-                "authenticated": { "id_token": "j.w.t", "access_token": "at", "user_info": {} },
-                "refresh_token": refresh_token,
-            }})
-        };
-
-        // The bug this exists to announce.
-        assert!(authenticated_without_refresh_token(&authenticated(json!(
-            null
-        ))));
-        // A healthy session must stay quiet.
-        assert!(!authenticated_without_refresh_token(&authenticated(json!(
-            "rt"
-        ))));
-        // Neither is a misconfiguration: no session, or a login in flight.
-        assert!(!authenticated_without_refresh_token(&json!(
-            "Unauthenticated"
-        )));
-        assert!(!authenticated_without_refresh_token(
-            &json!({ "Pending": { "nonce": "n" } })
-        ));
-        // An unrecognised shape is not evidence of a missing refresh token.
-        assert!(!authenticated_without_refresh_token(&json!({})));
-        // An authenticated session missing the field entirely still has none.
-        assert!(authenticated_without_refresh_token(
-            &json!({ "Authenticated": { "authenticated": {} } })
-        ));
-    }
 }
