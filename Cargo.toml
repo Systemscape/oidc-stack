@@ -34,7 +34,7 @@ secrecy = { version = "0.10.3", optional = true, features = [ "serde" ] }
 axum = { version = "0.8.9", optional = true }
 # Fork: absorbs a refused refresh token instead of erroring, and does not clear
 # the session when it does. Back to crates.io once that is released upstream.
-axum-oidc = { git = "https://codeberg.org/julidi/axum-oidc.git", rev = "c356510de72df9f4ecbf6aed53abc3e5ddc024b4", optional = true }
+axum-oidc = { git = "https://codeberg.org/pfzetto/axum-oidc.git", rev = "c356510de72df9f4ecbf6aed53abc3e5ddc024b4", optional = true }
 time = { version = "0.3.55", optional = true }
 tower = { version = "0.5.3", optional = true }
 tower-http = { version = "0.7.0", optional = true, features = [ "csrf" ] }
