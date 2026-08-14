@@ -195,6 +195,9 @@ impl<S: SessionStore + Clone> BffAuth<S> {
 
         let oidc_auth_service = ServiceBuilder::new()
             .layer(HandleErrorLayer::new(|e: MiddlewareError| async move {
+                // A refused refresh token is absorbed by the auth middleware,
+                // which leaves the request unauthenticated; what reaches here
+                // is a real fault.
                 tracing::error!(?e, "error in OIDC auth middleware");
                 e.into_response()
             }))
