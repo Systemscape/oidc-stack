@@ -12,10 +12,15 @@ pub const SECURE_COOKIES: bool = !cfg!(debug_assertions);
 /// - `SameSite::Lax`
 /// - Signed cookies
 /// - 7-day inactivity expiry
-/// - Always save (even if unchanged)
 ///
 /// `cookie_name` should be unique per service to allow simultaneous
 /// sessions (e.g. `"myapp_sid"`, `"myadmin_sid"`).
+///
+/// `with_always_save` is deliberately off: it re-persists the OIDC token blob
+/// on every response, so a read that overlaps a token refresh writes the
+/// pre-refresh token back and breaks the next refresh under refresh-token
+/// rotation (Rauthy, Keycloak). Refreshes still write the session, which keeps
+/// the inactivity window rolling for active users.
 pub fn build_session_layer<S: SessionStore>(
     store: S,
     signing_key: Key,
@@ -28,7 +33,6 @@ pub fn build_session_layer<S: SessionStore>(
         .with_signed(signing_key)
         .with_secure(secure)
         .with_expiry(Expiry::OnInactivity(time::Duration::days(7)))
-        .with_always_save(true)
 }
 
 /// Format a `Set-Cookie` header value that removes a session cookie.
